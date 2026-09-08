@@ -1,18 +1,40 @@
 {
-  "name": "blood-bank-management-system",
-  "version": "1.0.0",
-  "description": "Blood Bank Management System - DBMS College Project",
-  "main": "backend/server.js",
-  "scripts": {
-    "start": "cd backend && npm start",
-    "install-deps": "cd backend && npm install",
-    "dev": "cd backend && npm run dev"
+  "name": "utils-merge",
+  "version": "1.0.1",
+  "description": "merge() utility function",
+  "keywords": [
+    "util"
+  ],
+  "author": {
+    "name": "Jared Hanson",
+    "email": "jaredhanson@gmail.com",
+    "url": "http://www.jaredhanson.net/"
   },
-  "keywords": ["blood", "bank", "management", "dbms", "mysql", "node", "express"],
-  "author": "DBMS Project",
-  "license": "MIT",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "git://github.com/jaredhanson/utils-merge.git"
+  },
+  "bugs": {
+    "url": "http://github.com/jaredhanson/utils-merge/issues"
+  },
+  "license": "MIT",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://opensource.org/licenses/MIT"
+    }
+  ],
+  "main": "./index",
+  "dependencies": {},
+  "devDependencies": {
+    "make-node": "0.3.x",
+    "mocha": "1.x.x",
+    "chai": "1.x.x"
+  },
+  "engines": {
+    "node": ">= 0.4.0"
+  },
+  "scripts": {
+    "test": "node_modules/.bin/mocha --reporter spec --require test/bootstrap/node test/*.test.js"
   }
 }
