@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Bank Management System</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>🩸 Blood Bank</h2>
+            </div>
+            <nav class="nav-menu">
+                <a href="#" onclick="showSection('dashboard')" class="nav-item active">Dashboard</a>
+                <a href="#" onclick="showSection('donors')" class="nav-item">Donors</a>
+                <a href="#" onclick="showSection('donations')" class="nav-item">Donations</a>
+                <a href="#" onclick="showSection('camps')" class="nav-item">Donation Camps</a>
+                <a href="#" onclick="showSection('screening')" class="nav-item">Screening & Testing</a>
+                <a href="#" onclick="showSection('inventory')" class="nav-item">Blood Inventory</a>
+                <a href="#" onclick="showSection('hospitals')" class="nav-item">Hospitals</a>
+                <a href="#" onclick="showSection('recipients')" class="nav-item">Recipients</a>
+                <a href="#" onclick="showSection('requests')" class="nav-item">Blood Requests</a>
+                <a href="#" onclick="showSection('issues')" class="nav-item">Blood Issues</a>
+                <a href="#" onclick="showSection('billing')" class="nav-item">Billing</a>
+                <a href="#" onclick="showSection('reports')" class="nav-item">Reports</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <h1>Blood Bank Management System</h1>
+                <div class="user-info">
+                    <span>Connected to Database: BloodBankDB</span>
+                </div>
+            </header>
+
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="content-section active">
+                <h2>Dashboard</h2>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalDonors">0</div>
+                        <div class="stat-label">Total Donors</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalBloodUnits">0</div>
+                        <div class="stat-label">Blood Units</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="availableBloodUnits">0</div>
+                        <div class="stat-label">Available Units</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="pendingRequests">0</div>
+                        <div class="stat-label">Pending Requests</div>
+                    </div>
+                    <div class="stat-card emergency">
+                        <div class="stat-number" id="emergencyRequests">0</div>
+                        <div class="stat-label">Emergency Requests</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalHospitals">0</div>
+                        <div class="stat-label">Hospitals</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalRecipients">0</div>
+                        <div class="stat-label">Recipients</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="donationCamps">0</div>
+                        <div class="stat-label">Donation Camps</div>
+                    </div>
+                </div>
+
+                <h3>Blood Availability by Group</h3>
+                <div class="blood-availability">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Blood Group</th>
+                                <th>Available Units</th>
+                                <th>Total Quantity (ml)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bloodAvailabilityTable">
+                            <tr>
+                                <td colspan="3" class="text-center">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Donors Section -->
+            <section id="donors" class="content-section">
+                <h2>Donor Management</h2>
+                <div class="section-controls">
+                    <input type="text" id="donorSearch" placeholder="Search donor..." class="search-input">
+                    <select id="bloodGroupFilter" class="filter-select">
+                        <option value="">All Blood Groups</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="openDonorModal()">+ Add Donor</button>
+                </div>
+                <table id="donorTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Gender</th>
+                            <th>Blood Group</th>
+                            <th>Phone</th>
+                            <th>City</th>
+                            <th>Eligibility</th>
+                            <th>Last Donation</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="9" class="text-center">Loading donors...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Donations Section -->
+            <section id="donations" class="content-section">
+                <h2>Donation Management</h2>
+                <div class="section-controls">
+                    <button class="btn btn-primary" onclick="openDonationModal()">+ Add Donation</button>
+                </div>
+                <table id="donationTable">
+                    <thead>
+                        <tr>
+                            <th>Donation ID</th>
+                            <th>Donor</th>
+                            <th>Blood Group</th>
+                            <th>Donation Date</th>
+                            <th>Quantity (ml)</th>
+                            <th>Camp</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="7" class="text-center">Loading donations...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Donation Camps Section -->
+            <section id="camps" class="content-section">
+                <h2>Donation Camps</h2>
+                <div class="section-controls">
+                    <button class="btn btn-primary" onclick="openCampModal()">+ Add Camp</button>
+                </div>
+                <table id="campTable">
+                    <thead>
+                        <tr>
+                            <th>Camp ID</th>
+                            <th>Camp Name</th>
+                            <th>Location</th>
+                            <th>Date</th>
+                            <th>Organizer</th>
+                            <th>Contact</th>
+                            <th>Donations</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="8" class="text-center">Loading camps...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Screening Section -->
+            <section id="screening" class="content-section">
+                <h2>Screening & Testing</h2>
+                <div class="section-controls">
+                    <button class="btn btn-primary" onclick="openScreeningModal()">+ Add Screening</button>
+                </div>
+                <table id="screeningTable">
+                    <thead>
+                        <tr>
+                            <th>Screening ID</th>
+                            <th>Donation ID</th>
+                            <th>Donor</th>
+                            <th>HIV</th>
+                            <th>Hepatitis B</th>
+                            <th>Hepatitis C</th>
+                            <th>Malaria</th>
+                            <th>Hemoglobin</th>
+                            <th>Result</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="9" class="text-center">Loading screening records...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Blood Inventory Section -->
+            <section id="inventory" class="content-section">
+                <h2>Blood Inventory</h2>
+                <div class="section-controls">
+                    <select id="inventoryStatusFilter" class="filter-select" onchange="loadInventory()">
+                        <option value="">All Status</option>
+                        <option value="Available">Available</option>
+                        <option value="Issued">Issued</option>
+                        <option value="Expired">Expired</option>
+                    </select>
+                    <select id="inventoryBloodGroupFilter" class="filter-select" onchange="loadInventory()">
+                        <option value="">All Blood Groups</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                    </select>
+                    <button class="btn btn-warning" onclick="loadExpiringBlood()">Expiring Soon</button>
+                </div>
+                <table id="inventoryTable">
+                    <thead>
+                        <tr>
+                            <th>Blood ID</th>
+                            <th>Blood Group</th>
+                            <th>Component</th>
+                            <th>Quantity (ml)</th>
+                            <th>Collection Date</th>
+                            <th>Expiry Date</th>
+                            <th>Status</th>
+                            <th>Donor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="8" class="text-center">Loading inventory...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Hospitals Section -->
+            <section id="hospitals" class="content-section">
+                <h2>Hospital Management</h2>
+                <div class="section-controls">
+                    <button class="btn btn-primary" onclick="openHospitalModal()">+ Add Hospital</button>
+                </div>
+                <table id="hospitalTable">
+                    <thead>
+                        <tr>
+                            <th>Hospital ID</th>
+                            <th>Hospital Name</th>
+                            <th>Address</th>
+                            <th>City</th>
+                            <th>Phone</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="6" class="text-center">Loading hospitals...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Recipients Section -->
+            <section id="recipients" class="content-section">
+                <h2>Recipient Management</h2>
+                <div class="section-controls">
+                    <button class="btn btn-primary" onclick="openRecipientModal()">+ Add Recipient</button>
+                </div>
+                <table id="recipientTable">
+                    <thead>
+                        <tr>
+                            <th>Recipient ID</th>
+                            <th>Name</th>
+                            <th>Age</th>
+                            <th>Gender</th>
+                            <th>Blood Group</th>
+                            <th>Hospital</th>
+                            <th>Contact</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="8" class="text-center">Loading recipients...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Blood Requests Section -->
+            <section id="requests" class="content-section">
+                <h2>Blood Requests</h2>
+                <div class="section-controls">
+                    <button class="btn btn-primary" onclick="openRequestModal()">+ Create Request</button>
+                    <select id="requestStatusFilter" class="filter-select" onchange="loadRequests()">
+                        <option value="">All Status</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Approved">Approved</option>
+                        <option value="Fulfilled">Fulfilled</option>
+                        <option value="Rejected">Rejected</option>
+                    </select>
+                </div>
+                <table id="requestTable">
+                    <thead>
+                        <tr>
+                            <th>Request ID</th>
+                            <th>Recipient</th>
+                            <th>Blood Group</th>
+                            <th>Units Required</th>
+                            <th>Request Date</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="8" class="text-center">Loading requests...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Blood Issues Section -->
+            <section id="issues" class="content-section">
+                <h2>Blood Issue Management</h2>
+                <div class="section-controls">
+                    <button class="btn btn-primary" onclick="openIssueModal()">+ Issue Blood</button>
+                </div>
+                <table id="issueTable">
+                    <thead>
+                        <tr>
+                            <th>Issue ID</th>
+                            <th>Request ID</th>
+                            <th>Recipient</th>
+                            <th>Blood Group</th>
+                            <th>Quantity (ml)</th>
+                            <th>Issue Date</th>
+                            <th>Hospital</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="7" class="text-center">Loading blood issues...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Billing Section -->
+            <section id="billing" class="content-section">
+                <h2>Billing Management</h2>
+                <div class="section-controls">
+                    <button class="btn btn-primary" onclick="openBillingModal()">+ Create Bill</button>
+                </div>
+                <table id="billingTable">
+                    <thead>
+                        <tr>
+                            <th>Bill ID</th>
+                            <th>Issue ID</th>
+                            <th>Recipient</th>
+                            <th>Amount</th>
+                            <th>Payment Method</th>
+                            <th>Payment Status</th>
+                            <th>Bill Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="8" class="text-center">Loading bills...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Reports Section -->
+            <section id="reports" class="content-section">
+                <h2>Reports & Analytics</h2>
+                <div class="reports-grid">
+                    <div class="report-card">
+                        <h3>Blood Stock by Group</h3>
+                        <table id="bloodStockReport">
+                            <thead>
+                                <tr>
+                                    <th>Blood Group</th>
+                                    <th>Component</th>
+                                    <th>Units</th>
+                                    <th>Total Qty</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div class="report-card">
+                        <h3>Donor History</h3>
+                        <table id="donorHistoryReport">
+                            <thead>
+                                <tr>
+                                    <th>Donor</th>
+                                    <th>Blood Group</th>
+                                    <th>Donations</th>
+                                    <th>Total ML</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div class="report-card">
+                        <h3>Emergency Requests</h3>
+                        <table id="emergencyRequestsReport">
+                            <thead>
+                                <tr>
+                                    <th>Recipient</th>
+                                    <th>Blood Group</th>
+                                    <th>Units</th>
+                                    <th>Priority</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div class="report-card">
+                        <h3>Camp Statistics</h3>
+                        <table id="campStatsReport">
+                            <thead>
+                                <tr>
+                                    <th>Camp Name</th>
+                                    <th>Location</th>
+                                    <th>Donations</th>
+                                    <th>Total ML</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div class="report-card">
+                        <h3>Hospital Recipients</h3>
+                        <table id="hospitalRecipientsReport">
+                            <thead>
+                                <tr>
+                                    <th>Hospital</th>
+                                    <th>City</th>
+                                    <th>Recipients</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div class="report-card">
+                        <h3>Billing Summary</h3>
+                        <div id="billingSummaryReport"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Donor Modal -->
+    <div id="donorModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeDonorModal()">&times;</span>
+            <h2>Add/Edit Donor</h2>
+            <form id="donorForm">
+                <input type="hidden" id="donorId">
+                <input type="text" id="donorName" placeholder="Donor Name" required>
+                <select id="donorGender">
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+                <input type="date" id="donorDOB" placeholder="Date of Birth">
+                <select id="donorBloodGroup" required>
+                    <option value="">Select Blood Group</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                </select>
+                <input type="tel" id="donorPhone" placeholder="Phone Number" required>
+                <input type="email" id="donorEmail" placeholder="Email">
+                <input type="text" id="donorAddress" placeholder="Address">
+                <input type="text" id="donorCity" placeholder="City">
+                <select id="donorEligibility">
+                    <option value="Eligible">Eligible</option>
+                    <option value="Ineligible">Ineligible</option>
+                    <option value="Deferred">Deferred</option>
+                </select>
+                <button type="submit" class="btn btn-primary">Save Donor</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Donation Modal -->
+    <div id="donationModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeDonationModal()">&times;</span>
+            <h2>Add Donation</h2>
+            <form id="donationForm">
+                <select id="donationDonorId" required>
+                    <option value="">Select Donor</option>
+                </select>
+                <select id="donationCampId">
+                    <option value="">Select Camp (Optional)</option>
+                </select>
+                <input type="date" id="donationDate" required>
+                <input type="number" id="donationQuantity" value="450" min="1">
+                <button type="submit" class="btn btn-primary">Record Donation</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Camp Modal -->
+    <div id="campModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCampModal()">&times;</span>
+            <h2>Add/Edit Camp</h2>
+            <form id="campForm">
+                <input type="hidden" id="campId">
+                <input type="text" id="campName" placeholder="Camp Name" required>
+                <input type="text" id="campLocation" placeholder="Location">
+                <input type="date" id="campDate" required>
+                <input type="text" id="campOrganizer" placeholder="Organizer">
+                <input type="tel" id="campContact" placeholder="Contact">
+                <button type="submit" class="btn btn-primary">Save Camp</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Screening Modal -->
+    <div id="screeningModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeScreeningModal()">&times;</span>
+            <h2>Add Screening Record</h2>
+            <form id="screeningForm">
+                <select id="screeningDonationId" required>
+                    <option value="">Select Donation</option>
+                </select>
+                <select id="screeningHIV" required>
+                    <option value="">HIV Result</option>
+                    <option value="Negative">Negative</option>
+                    <option value="Positive">Positive</option>
+                    <option value="Inconclusive">Inconclusive</option>
+                </select>
+                <select id="screeningHepatitisB" required>
+                    <option value="">Hepatitis B Result</option>
+                    <option value="Negative">Negative</option>
+                    <option value="Positive">Positive</option>
+                    <option value="Inconclusive">Inconclusive</option>
+                </select>
+                <select id="screeningHepatitisC" required>
+                    <option value="">Hepatitis C Result</option>
+                    <option value="Negative">Negative</option>
+                    <option value="Positive">Positive</option>
+                    <option value="Inconclusive">Inconclusive</option>
+                </select>
+                <select id="screeningMalaria" required>
+                    <option value="">Malaria Result</option>
+                    <option value="Negative">Negative</option>
+                    <option value="Positive">Positive</option>
+                    <option value="Inconclusive">Inconclusive</option>
+                </select>
+                <input type="text" id="screeningBP" placeholder="Blood Pressure (e.g., 120/80)">
+                <input type="number" id="screeningHemoglobin" placeholder="Hemoglobin (g/dL)" step="0.1">
+                <button type="submit" class="btn btn-primary">Save Screening</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Hospital Modal -->
+    <div id="hospitalModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeHospitalModal()">&times;</span>
+            <h2>Add/Edit Hospital</h2>
+            <form id="hospitalForm">
+                <input type="hidden" id="hospitalId">
+                <input type="text" id="hospitalName" placeholder="Hospital Name" required>
+                <input type="text" id="hospitalAddress" placeholder="Address">
+                <input type="text" id="hospitalCity" placeholder="City">
+                <input type="tel" id="hospitalPhone" placeholder="Phone">
+                <button type="submit" class="btn btn-primary">Save Hospital</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Recipient Modal -->
+    <div id="recipientModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeRecipientModal()">&times;</span>
+            <h2>Add/Edit Recipient</h2>
+            <form id="recipientForm">
+                <input type="hidden" id="recipientId">
+                <select id="recipientHospitalId" required>
+                    <option value="">Select Hospital</option>
+                </select>
+                <input type="text" id="recipientName" placeholder="Recipient Name" required>
+                <input type="number" id="recipientAge" placeholder="Age" min="1">
+                <select id="recipientGender">
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+                <select id="recipientBloodGroup" required>
+                    <option value="">Select Blood Group</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                </select>
+                <input type="tel" id="recipientContact" placeholder="Contact">
+                <button type="submit" class="btn btn-primary">Save Recipient</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Blood Request Modal -->
+    <div id="requestModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeRequestModal()">&times;</span>
+            <h2>Create Blood Request</h2>
+            <form id="requestForm">
+                <select id="requestRecipientId" required>
+                    <option value="">Select Recipient</option>
+                </select>
+                <select id="requestBloodGroup" required>
+                    <option value="">Select Blood Group</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                </select>
+                <select id="requestComponentType">
+                    <option value="">Select Component (Optional)</option>
+                    <option value="Whole Blood">Whole Blood</option>
+                    <option value="Packed Cells">Packed Cells</option>
+                    <option value="Plasma">Plasma</option>
+                    <option value="Platelets">Platelets</option>
+                </select>
+                <input type="number" id="requestUnits" placeholder="Units Required" min="1" required>
+                <input type="date" id="requestDate" required>
+                <select id="requestPriority">
+                    <option value="Normal">Normal</option>
+                    <option value="Urgent">Urgent</option>
+                    <option value="Emergency">Emergency</option>
+                </select>
+                <button type="submit" class="btn btn-primary">Create Request</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Blood Issue Modal -->
+    <div id="issueModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeIssueModal()">&times;</span>
+            <h2>Issue Blood</h2>
+            <form id="issueForm">
+                <select id="issueRequestId" required>
+                    <option value="">Select Blood Request</option>
+                </select>
+                <select id="issueBloodId" required>
+                    <option value="">Select Blood Unit</option>
+                </select>
+                <input type="date" id="issueDate" required>
+                <input type="number" id="issueQuantity" placeholder="Quantity (ml)" min="1" required>
+                <button type="submit" class="btn btn-primary">Issue Blood</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Billing Modal -->
+    <div id="billingModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeBillingModal()">&times;</span>
+            <h2>Create Bill</h2>
+            <form id="billingForm">
+                <select id="billingIssueId" required>
+                    <option value="">Select Blood Issue</option>
+                </select>
+                <input type="date" id="billingDate" required>
+                <input type="number" id="billingAmount" placeholder="Amount" step="0.01" required>
+                <select id="billingPaymentMethod">
+                    <option value="Cash">Cash</option>
+                    <option value="Card">Card</option>
+                    <option value="UPI">UPI</option>
+                    <option value="Online">Online</option>
+                </select>
+                <button type="submit" class="btn btn-primary">Create Bill</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
